@@ -4,53 +4,16 @@ import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../providers/AuthProvider"
 
 
 
-type registerResponseType = {
-    "accessToken": string,
-    "refreshToken": string
-}
 
-const useRegister = () => {
-    const navigate = useNavigate()
-    return (
-        useMutation({
-            mutationFn: async ({ email, password }: { email: string, password: string }) => {
-                const { data } = await axios.post('https://expprisma-production.up.railway.app/api/v1/auth/register', { email, password })
-                localStorage.setItem('token', data.accessToken)
-                return data as registerResponseType
-            },
-            onSuccess: () => {
-                navigate("/", { replace: true })
 
-            }
-        })
-    )
-}
-
-const useLogin = () => {
-    const navigate = useNavigate()
-    return (
-        useMutation({
-            mutationFn: async ({ email, password }: { email: string, password: string }) => {
-                const { data } = await axios.post('https://expprisma-production.up.railway.app/api/v1/auth/login', { email, password })
-                localStorage.setItem('token', data.accessToken)
-                return data as registerResponseType
-            },
-            onSuccess: () => {
-                navigate("/", { replace: true })
-
-            }
-        })
-    )
-}
 
 export default function Login() {
-    const { mutate, isLoading, isError, error, data } = useRegister()
-    const { mutate: mutateLogin, isLoading: isLoadingLogin, error: errorLogin, data: dataLogin } = useLogin()
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const { email, setEmail, password, isRegistering, register, setPassword, isLogin, login } = useAuth()
+
     return (
         <>
             {/*
@@ -133,7 +96,7 @@ export default function Login() {
                         <div>
                             <button
                                 onClick={() => {
-                                    mutateLogin({ email, password })
+                                    login()
                                 }}
                                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
@@ -144,7 +107,7 @@ export default function Login() {
                             </button>
                             <button
                                 onClick={() => {
-                                    mutate({ email, password })
+                                    register()
                                 }}
                                 className=" mt-2 group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
