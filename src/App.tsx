@@ -15,6 +15,7 @@ import {
 import { useEffect } from 'react'
 import { HomepageLogged } from './container/HomepageLogged'
 import { Todo } from './container/Todo'
+import AuthProvider from './providers/AuthProvider'
 
 const queryClient = new QueryClient()
 
@@ -25,13 +26,15 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Routes>
-        <Route path='/' element={<Navbar />}>
-          <Route index element={<Homepage />} />
-          <Route path='login' element={<Login />} />
-          <Route path='todo' element={<Todo />} />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<Navbar />}>
+            <Route index element={<Homepage />} />
+            <Route path='login' element={<Login />} />
+            <Route path='todo' element={<Todo />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
